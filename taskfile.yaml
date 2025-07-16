@@ -1,0 +1,39 @@
+version: "3"
+
+vars:
+  APP_NAME: servd
+  APP_VERSION: "0.1"
+
+tasks:
+  default:
+    desc: List the available commands
+    silent: true
+    cmds:
+      - task --list-all
+
+  banner:
+    internal: true
+    silent: true
+    cmds:
+      - echo -e "\033[1;33m$\033[0m \033[90m{{.MSG}}\033[0m"
+
+  tidy:
+    desc: Tidy up the {{.APP_NAME}} project
+    silent: true
+    cmds:
+      - task: banner
+        vars:
+          MSG: Tidying up the project
+      - go mod tidy
+      - go mod verify
+      - echo
+
+  build:
+    desc: Build the {{.APP_NAME}} executable
+    silent: true
+    cmds:
+      - task: banner
+        vars:
+          MSG: Building the {{.APP_NAME}} executable
+      - go build -o ./{{.APP_NAME}}.exe -ldflags "-s -w -X servd/src/constants.AppVersion={{.APP_VERSION}}" -trimpath -buildvcs=false  ./src/main.go
+      - echo
