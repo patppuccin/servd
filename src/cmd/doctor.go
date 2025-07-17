@@ -9,12 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var validDoctorModes = []string{"quick", "full", "detailed"}
-var validDoctorOutputFormats = []string{"json", "yaml", "csv", "list"}
 var doctorCmd = &cobra.Command{
-	Use:   "doctor",
-	Short: helpDoctorCmd,
-	Long:  out.Banner(helpDoctorCmd),
+	Use:           "doctor",
+	Short:         helpDoctorCmd,
+	Long:          out.Banner(helpDoctorCmd),
+	SilenceErrors: true,
+	SilenceUsage:  true,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		var errs []string
 		if !slices.Contains(validDoctorOutputFormats, flagDoctorFormat) {
@@ -29,13 +29,14 @@ var doctorCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Help()
 		out.Info("doctor command is not implemented yet")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(doctorCmd)
-	doctorCmd.Flags().StringVarP(&flagDoctorFormat, "format", "f", "list", "output format (options: "+strings.Join(validDoctorOutputFormats, ", ")+")")
-	doctorCmd.Flags().StringVarP(&flagDoctorMode, "mode", "m", "quick", "run mode (options: "+strings.Join(validDoctorModes, ", ")+")")
-	doctorCmd.Flags().StringVarP(&flagDoctorExportPath, "export-path", "o", "", "path to the (optional) output file")
+	doctorCmd.Flags().StringVarP(&flagDoctorFormat, "format", "f", "list", "out format ("+strings.Join(validDoctorOutputFormats, ",")+")")
+	doctorCmd.Flags().StringVarP(&flagDoctorMode, "mode", "m", "quick", "run mode ("+strings.Join(validDoctorModes, ",")+")")
+	doctorCmd.Flags().StringVarP(&flagDoctorExportPath, "export", "o", "", "path to the (optional) output file")
 }

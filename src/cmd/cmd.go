@@ -55,6 +55,14 @@ var (
 	flagDoctorExportPath      string
 )
 
+var validDoctorModes = []string{"quick", "full", "detailed"}
+var validDoctorOutputFormats = []string{"json", "yaml", "csv", "list"}
+var validStartupTypes = []string{"auto", "manual"}
+var validRestartPolicies = []string{"always", "on-fail", "till-stop"}
+var validListStatuses = []string{"running", "stopped", "all"}
+var validListOutputFormats = []string{"json", "yaml", "csv", "table"}
+var validListModes = []string{"simple", "detailed", "full"}
+
 var rootCmd = &cobra.Command{
 	Use:           constants.AppAbbrName,
 	Short:         helpRootCmd,
@@ -67,16 +75,13 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-var validListOutputFormats = []string{"json", "yaml", "csv", "table"}
-
 func init() {
-	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.PersistentFlags().BoolVar(&flagGlobalNoInteractive, "no-interactive", false, "disable interactive mode")
 
 	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
 		cmd.Help()
 		fmt.Println()
-		out.Error("Error parsing the provided flags: " + err.Error())
+		out.Error("Error parsing flags: " + err.Error())
 		os.Exit(1)
 		return nil
 	})
